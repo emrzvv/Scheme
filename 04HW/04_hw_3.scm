@@ -1,0 +1,21 @@
+(define (lst c)
+  (let ((x (read-char)))
+    (if (eof-object? x)
+        (begin c)
+        (cons x (lst c)))))
+
+(define k (lst '()))
+
+(define (str n xs c k)
+  (if (null? xs)
+      (reverse n)
+      (if (and (null? (cdr xs)) (not (or (equal? (car xs) #\return) (equal? (car xs) #\newline) (equal? (car xs) #\space))))
+          (reverse (cons (list->string (reverse (cons (car xs) k))) n))
+          (if (or (equal? (car xs) #\return) (equal? (car xs) #\newline) (equal? (car xs) #\space))
+              (if (equal? c 0)
+                  (str n (cdr xs) 0 k)
+                  (str (cons (list->string (reverse k)) n) (cdr xs) 0 '())
+                  )
+              (str n (cdr xs) 1 (append (list (car xs)) k))))))
+
+(define (read-words) (str '() k 0 '()))

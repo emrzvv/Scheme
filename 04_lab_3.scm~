@@ -1,0 +1,29 @@
+(define-syntax lazy-cons
+  (syntax-rules ()
+    ((lazy-cons a b) (cons a (delay b)))))
+
+(define lazy-car car)
+
+(define (lazy-cdr ls)
+  (force (cdr ls)))
+
+(define (lazy-ref lst n)
+  (if (zero? n)
+      (lazy-car lst)
+      (lazy-ref (lazy-cdr lst) (- n 1))))
+
+(define (trib-gen a b c)
+  (lazy-cons a (trib-gen b c (+ a b c))))
+
+(define (lazy-trib n)
+  (lazy-ref (trib-gen 0 0 1) n))
+
+(define (not-lazy-trib n)
+  (cond  ((<= n 1) 0) ((= n 2) 1) 
+         (else (+ (not-lazy-trib (- n 1))
+                  (not-lazy-trib (- n 2))
+                  (not-lazy-trib (- n 3))))))
+
+(not-lazy-trib 30)
+(display #\newline)
+(lazy-trib 30)
