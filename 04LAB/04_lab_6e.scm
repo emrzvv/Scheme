@@ -1,15 +1,12 @@
 (define-syntax cout
-  (syntax-rules ()
-    ((cout x ...)
-     (letrec
-         ((rec (lambda (xs i)
-                 (cond ((not (null? xs))
-                        (if (even? i)
-                            (cond ((equal? (car xs) 'endl) (newline))
-                                  ((equal? (car xs) "\n") (newline))
-                                  (else (display (car xs)))))
-                        (rec (cdr xs) (+ i 1)))))))
-       (rec (list 'x ... '()) 1)))))
+  (syntax-rules (<< endl)
+    ((_ ) (begin))
+    ((_ << endl . expr) (begin
+                         (newline)
+                         (cout . expr)))
+    ((_ << exp . expr) (begin
+                        (display exp)
+                        (cout . expr)))))
 
 ;(cout << "a = " << 1 << endl << "b = " << 2)
 (define x 1)
